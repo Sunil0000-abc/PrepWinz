@@ -10,6 +10,7 @@ const getQuestions = async () => {
 };
 
 export default function Mock({ prop }) {
+  
   const quiz = prop;
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -25,34 +26,40 @@ export default function Mock({ prop }) {
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
 
-  const handleSubmit = () => {
-    let correct = 0;
-    let wrong = 0;
+ const handleSubmit = () => {
+  let correct = 0;
+  let wrong = 0;
 
-    questions.forEach((q) => {
-      if (selectedOptions[q._id] === q.answer) {
-        correct++;
-      } else {
-        wrong++;
-      }
-    });
+  questions.forEach((q) => {
+    const selected = selectedOptions[q._id];
+    const correctAnswerText = q[q.correct?.toLowerCase()]; // e.g., q['a']
 
-    setResult({ correct, wrong });
-    setIsSubmitted(true);
-  };
+    if (selected === undefined) return;
+
+    if (selected === correctAnswerText) {
+      correct++;
+    } else {
+      wrong++;
+    }
+  });
+
+  setResult({ correct, wrong });
+  setIsSubmitted(true);
+};
 
   // Fetch questions
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getQuestions();
-      const filtered = data.filter(
-        (q) => q.test?.toLowerCase() === quiz?.toLowerCase()
-      );
-      setQuestions(filtered);
-    };
+  const fetchData = async () => {
+    const data = await getQuestions();
+    const filtered = data.filter(
+      (q) => q.test?.toLowerCase() === quiz?.toLowerCase()
+    );
+    setQuestions(filtered);
+  };
 
-    fetchData();
-  }, [quiz]);
+  fetchData();
+}, [quiz]);
+
 
   // Global 30-minute countdown timer
   useEffect(() => {
@@ -104,7 +111,7 @@ export default function Mock({ prop }) {
       <div className="p-6 text-center">
         {quiz ? (
           <p>
-            Loading Questions for ... <strong>{quiz}</strong>.
+            Loading Questions for  <strong>{quiz}</strong>.
           </p>
         ) : (
           <p>Loading questions...</p>

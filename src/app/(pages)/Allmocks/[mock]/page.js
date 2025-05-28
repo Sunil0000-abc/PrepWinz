@@ -6,8 +6,8 @@ import { useParams } from 'next/navigation';
 const Mocktest = () => {
   const params = useParams();
   const test = decodeURIComponent(params.mock); // decode the dynamic segment
+  console.log(test);
   
-
   return (
     <div>
       <Mock prop={test} />

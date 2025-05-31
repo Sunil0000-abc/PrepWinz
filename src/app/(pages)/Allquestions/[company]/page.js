@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import QuestionPage from '@/app/components/questions';
-import { useParams } from 'next/navigation';
+import QuestionPage from "@/app/components/questions";
+import { useParams } from "next/navigation";
 
 const Company = () => {
   const params = useParams();
-  const company = params.company; // this gets the dynamic segment from [company]
+  const company = params.company;
 
   return (
     <div>
-      <QuestionPage prop={company}/>
+      <QuestionPage company={company} />
     </div>
   );
 };

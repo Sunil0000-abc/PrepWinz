@@ -1,0 +1,27 @@
+{
+  "rewrites": [
+    {
+      "source": "/quiz",
+      "destination": "/quiz/start"
+    },
+    {
+      "source": "/submit",
+      "destination": "/quiz/submit"
+    },
+    {
+      "source": "/result",
+      "destination": "/quiz/result"
+    },
+    {
+      "source": "/company/:company",
+      "destination": "/Allquestions/:company"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}

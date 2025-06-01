@@ -23,33 +23,34 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
 
-  const url = isSignUp ? "/signup" : "/log";
+    const url = isSignUp
+      ? process.env.NEXT_PUBLIC_API_URL_SIGNUP
+      : process.env.NEXT_PUBLIC_API_URL_LOGIN;
+      
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData),
-  });
+    const data = await res.json();
 
-  const data = await res.json();
+    if (!res.ok) {
+      setError(data.message || "Something went wrong");
+      return;
+    }
 
-  if (!res.ok) {
-    setError(data.message || "Something went wrong");
-    return;
-  }
-
-  if (isSignUp) {
-    alert("Registration successful! Please login.");
-    setIsSignUp(false);
-  } else {
-    localStorage.setItem("user", JSON.stringify(data.user)); // <-- Save user info
-    router.push("/");
-  }
-};
-
+    if (isSignUp) {
+      alert("Registration successful! Please login.");
+      setIsSignUp(false);
+    } else {
+      localStorage.setItem("user", JSON.stringify(data.user)); // <-- Save user info
+      router.push("/");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -61,7 +62,10 @@ export default function LoginPage() {
         <form className="space-y-6" onSubmit={handleSubmit}>
           {isSignUp && (
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 Name
               </label>
               <input
@@ -77,7 +81,10 @@ export default function LoginPage() {
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email
             </label>
             <input
@@ -92,7 +99,10 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Password
             </label>
             <input

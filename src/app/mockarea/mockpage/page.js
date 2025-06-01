@@ -14,11 +14,11 @@ const page = () => {
       <div className="min-h-screen bg-gray-100 py-10 px-4">
         <div className="max-w-5xl mx-auto text-center mb-12">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
-            Choose a Company to Start the Quiz
+            Start Your Quiz Journey
           </h1>
           <p className="text-gray-600 text-lg">
-            Select your preferred company to take a customized quiz based on its
-            questions.
+            Test your knowledge with a variety of questions tailored to
+            challenge and improve your skills.
           </p>
         </div>
 
@@ -32,7 +32,6 @@ const page = () => {
             </div>
           ))}
         </div>
-       
       </div>
     </div>
   );

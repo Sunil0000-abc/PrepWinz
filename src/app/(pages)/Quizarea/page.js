@@ -7,8 +7,6 @@ const companies = [
   { name: "TCS" },
   { name: "Cognizant" },
   { name: "Wipro" },
-  { name: "Google" },
-  { name: "Microsoft" },
 ];
 
 const Quizarea = () => {

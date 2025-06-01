@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { FaPlay } from "react-icons/fa";
+import { GoGoal } from "react-icons/go";
 
 const Quiztiles = ({ comp }) => {
   const router = useRouter();
@@ -23,7 +23,7 @@ const Quiztiles = ({ comp }) => {
   md:gap-4 md:p-6 md:max-w-sm
 "
     >
-      <FaPlay className="text-black text-sm sm:text-lg" />
+       <GoGoal className="text-black text-sm sm:text-lg" />
       <h2 className="text-green-700 font-bold text-sm capitalize sm:text-lg">
         {displayName}
       </h2>

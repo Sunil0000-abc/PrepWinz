@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const getQuestions = async () => {
-  const res = await fetch("http://localhost:3000/mocktest");
+  const res = await fetch(process.env.NEXT_PUBLIC_API_URL2);
   const data = await res.json();
   return data.result;
 };

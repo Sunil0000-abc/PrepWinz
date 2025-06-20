@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const getQuestions = async () => {
   const res = await fetch(process.env.NEXT_PUBLIC_API_URL2);
@@ -10,63 +10,62 @@ const getQuestions = async () => {
 };
 
 export default function Mock({ prop }) {
-  
   const quiz = prop;
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [totalTimeLeft, setTotalTimeLeft] = useState(100); // 30 minutes
+  const [totalTimeLeft, setTotalTimeLeft] = useState(1800); // 100 seconds
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [result, setResult] = useState({ correct: 0, wrong: 0 });
+  const timerRef = useRef(null);
 
-  // Format time as MM:SS
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
 
- const handleSubmit = () => {
-  let correct = 0;
-  let wrong = 0;
+  const handleSubmit = () => {
+    if (isSubmitted) return;
 
-  questions.forEach((q) => {
-    const selected = selectedOptions[q._id];
-    const correctAnswerText = q[q.correct?.toLowerCase()]; // e.g., q['a']
+    clearInterval(timerRef.current); // ✅ Stop timer immediately
+    let correct = 0;
+    let wrong = 0;
 
-    if (selected === undefined) return;
+    questions.forEach((q) => {
+      const selected = selectedOptions[q._id];
+      const correctAnswerText = q[q.correct?.toLowerCase()];
 
-    if (selected === correctAnswerText) {
-      correct++;
-    } else {
-      wrong++;
-    }
-  });
+      if (selected === undefined) return;
 
-  setResult({ correct, wrong });
-  setIsSubmitted(true);
-};
+      if (selected === correctAnswerText) {
+        correct++;
+      } else {
+        wrong++;
+      }
+    });
 
-  // Fetch questions
-  useEffect(() => {
-  const fetchData = async () => {
-    const data = await getQuestions();
-    const filtered = data.filter(
-      (q) => q.test?.toLowerCase() === quiz?.toLowerCase()
-    );
-    setQuestions(filtered);
+    setResult({ correct, wrong });
+    setIsSubmitted(true);
   };
 
-  fetchData();
-}, [quiz]);
-
-
-  // Global 30-minute countdown timer
   useEffect(() => {
-    const timer = setInterval(() => {
+    const fetchData = async () => {
+      const data = await getQuestions();
+      const filtered = data.filter(
+        (q) => q.test?.toLowerCase() === quiz?.toLowerCase()
+      );
+      setQuestions(filtered);
+    };
+
+    fetchData();
+  }, [quiz]);
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
       setTotalTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
+          clearInterval(timerRef.current);
           alert("Time's up!");
           handleSubmit(); // ✅ Auto-submit on time up
           return 0;
@@ -75,11 +74,11 @@ export default function Mock({ prop }) {
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(timerRef.current); // Cleanup on unmount
   }, []);
 
   const handleOptionChange = (questionId, option) => {
-    if (totalTimeLeft <= 0) return; // prevent selection after time
+    if (totalTimeLeft <= 0) return;
     setSelectedOptions((prev) => ({
       ...prev,
       [questionId]: option,
@@ -111,7 +110,7 @@ export default function Mock({ prop }) {
       <div className="p-6 text-center">
         {quiz ? (
           <p>
-            Loading Questions for  <strong>{quiz}</strong>.
+            Loading Questions for <strong>{quiz}</strong>.
           </p>
         ) : (
           <p>Loading questions...</p>
@@ -123,43 +122,54 @@ export default function Mock({ prop }) {
   const q = questions[currentQuestion];
   const options = [q.a, q.b, q.c, q.d].filter(Boolean);
 
- if (isSubmitted) {
-  return (
-   <div className="p-6 max-w-sm mx-auto bg-white rounded-lg shadow-md text-center">
-  <h1 className="text-2xl font-bold text-green-700 mb-6">Quiz Submitted!</h1>
-  
-  <div className="mb-6">
-    <div className="mb-2 font-semibold text-gray-700">Correct Answers: {result.correct}</div>
-    <div className="bg-green-200 rounded h-6 relative">
-      <div 
-        className="bg-green-600 h-6 rounded" 
-        style={{ width: `${(result.correct / (result.correct + result.wrong)) * 100}%` }} 
-      />
-    </div>
-  </div>
-  
-  <div className="mb-6">
-    <div className="mb-2 font-semibold text-gray-700">Wrong Answers: {result.wrong}</div>
-    <div className="bg-red-200 rounded h-6 relative">
-      <div 
-        className="bg-red-600 h-6 rounded" 
-        style={{ width: `${(result.wrong / (result.correct + result.wrong)) * 100}%` }} 
-      />
-    </div>
-  </div>
+  if (isSubmitted) {
+    return (
+      <div className="p-6 max-w-sm mx-auto bg-white rounded-lg shadow-md text-center">
+        <h1 className="text-2xl font-bold text-green-700 mb-6">Quiz Submitted!</h1>
 
-  <p className="text-gray-600 mt-4">Thank you for participating!</p>
-  <Link className="text-[12px] text-blue-600" href='/mockarea/mockpage'>go to quiz page</Link>
-</div>
+        <div className="mb-6">
+          <div className="mb-2 font-semibold text-gray-700">
+            Correct Answers: {result.correct}
+          </div>
+          <div className="bg-green-200 rounded h-6 relative">
+            <div
+              className="bg-green-600 h-6 rounded"
+              style={{
+                width: `${(result.correct / (result.correct + result.wrong)) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
 
+        <div className="mb-6">
+          <div className="mb-2 font-semibold text-gray-700">
+            Wrong Answers: {result.wrong}
+          </div>
+          <div className="bg-red-200 rounded h-6 relative">
+            <div
+              className="bg-red-600 h-6 rounded"
+              style={{
+                width: `${(result.wrong / (result.correct + result.wrong)) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
 
-  );
-} else {
+        <p className="text-gray-600 mt-4">Thank you for participating!</p>
+        <Link className="text-[12px] text-blue-600" href="/mockarea/mockpage">
+          go to quiz page
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center p-6 md:w-[70%] mx-auto">
       <div className="max-w-xl w-full bg-white rounded-xl p-6 space-y-6 shadow">
         <div className="flex justify-between text-sm text-gray-500">
-          <div>Question {currentQuestion + 1} of {questions.length}</div>
+          <div>
+            Question {currentQuestion + 1} of {questions.length}
+          </div>
           <div className="font-bold text-red-600">
             Time left: {formatTime(totalTimeLeft)}
           </div>
@@ -229,6 +239,4 @@ export default function Mock({ prop }) {
       </div>
     </div>
   );
-}
-
 }

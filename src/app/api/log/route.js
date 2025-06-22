@@ -23,6 +23,7 @@ export async function POST(request) {
         user: {
           name: user.name,
           email: user.email,
+          isadmin:user.isadmin,
         },
       }),
       {

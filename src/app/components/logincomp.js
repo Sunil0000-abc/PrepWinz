@@ -48,7 +48,7 @@ export default function LoginPage() {
       setIsSignUp(false);
     } else {
       localStorage.setItem("user", JSON.stringify(data.user)); // <-- Save user info
-      router.push("/");
+      window.location.href = "/";
     }
   };
 

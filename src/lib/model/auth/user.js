@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
   name: String,
   email: { type: String, unique: true },
   password: String, // stored as plain text (NOT secure)
+  isadmin:{type: String ,enum:["yes","no"],default:"no"}
 });
 
 export const User = mongoose.models.auth || mongoose.model("auth", userSchema);

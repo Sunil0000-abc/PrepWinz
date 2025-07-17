@@ -1,4 +1,4 @@
-// src/lib/db.js
+
 import mongoose from "mongoose";
 
 const connstr = process.env.MONGODB_URI;

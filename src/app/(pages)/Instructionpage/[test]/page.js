@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 
 export default function Inst() {
   const params = useParams();
-  const test = decodeURIComponent(params.test); // ✅ decode the test name
+  const test = decodeURIComponent(params.test); //  decode the test name
 
   return (
     <div>

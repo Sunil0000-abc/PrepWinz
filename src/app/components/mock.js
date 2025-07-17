@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 const getQuestions = async () => {
   const res = await fetch(process.env.NEXT_PUBLIC_API_URL2);
@@ -14,7 +16,7 @@ export default function Mock({ prop }) {
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [totalTimeLeft, setTotalTimeLeft] = useState(1800); // 100 seconds
+  const [totalTimeLeft, setTotalTimeLeft] = useState(1800);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [result, setResult] = useState({ correct: 0, wrong: 0 });
   const timerRef = useRef(null);
@@ -28,7 +30,7 @@ export default function Mock({ prop }) {
   const handleSubmit = () => {
     if (isSubmitted) return;
 
-    clearInterval(timerRef.current); // ✅ Stop timer immediately
+    clearInterval(timerRef.current); //  Stop timer immediately
     let correct = 0;
     let wrong = 0;
 
@@ -67,7 +69,7 @@ export default function Mock({ prop }) {
         if (prev <= 1) {
           clearInterval(timerRef.current);
           alert("Time's up!");
-          handleSubmit(); // ✅ Auto-submit on time up
+          handleSubmit(); // Auto-submit on time up
           return 0;
         }
         return prev - 1;
@@ -122,37 +124,33 @@ export default function Mock({ prop }) {
   const q = questions[currentQuestion];
   const options = [q.a, q.b, q.c, q.d].filter(Boolean);
 
+  const total = result.correct + result.wrong;
+  const accuracy = total > 0 ? (result.correct / total) * 100 : 0;
+
   if (isSubmitted) {
     return (
       <div className="p-6 max-w-sm mx-auto bg-white rounded-lg shadow-md text-center">
-        <h1 className="text-2xl font-bold text-green-700 mb-6">Quiz Submitted!</h1>
+        <h1 className="text-2xl font-bold text-green-700 mb-6">
+          Quiz Submitted!
+        </h1>
 
-        <div className="mb-6">
-          <div className="mb-2 font-semibold text-gray-700">
-            Correct Answers: {result.correct}
-          </div>
-          <div className="bg-green-200 rounded h-6 relative">
-            <div
-              className="bg-green-600 h-6 rounded"
-              style={{
-                width: `${(result.correct / (result.correct + result.wrong)) * 100}%`,
-              }}
+        <div className="mb-6 flex justify-center">
+          <div style={{ width: 120, height: 120 }}>
+            <CircularProgressbar
+              value={accuracy}
+              text={`${Math.round(accuracy)}%`}
+              styles={buildStyles({
+                textColor: "#16a34a",
+                pathColor: "#16a34a",
+                trailColor: "#d1fae5",
+                textSize: "16px",
+              })}
             />
           </div>
         </div>
 
-        <div className="mb-6">
-          <div className="mb-2 font-semibold text-gray-700">
-            Wrong Answers: {result.wrong}
-          </div>
-          <div className="bg-red-200 rounded h-6 relative">
-            <div
-              className="bg-red-600 h-6 rounded"
-              style={{
-                width: `${(result.wrong / (result.correct + result.wrong)) * 100}%`,
-              }}
-            />
-          </div>
+        <div className="mb-2 font-semibold text-gray-700">
+          Correct: {result.correct} | Wrong: {result.wrong}
         </div>
 
         <p className="text-gray-600 mt-4">Thank you for participating!</p>
@@ -222,7 +220,9 @@ export default function Mock({ prop }) {
 
           <button
             onClick={handleNext}
-            disabled={currentQuestion === questions.length - 1 || totalTimeLeft <= 0}
+            disabled={
+              currentQuestion === questions.length - 1 || totalTimeLeft <= 0
+            }
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
           >
             Next

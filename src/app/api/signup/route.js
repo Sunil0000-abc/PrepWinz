@@ -1,40 +1,37 @@
 import { connectDB } from "@/lib/db";
 import { User } from "@/lib/model/auth/user";
+import bcrypt from "bcryptjs"
 
-export async function POST(request) {
-  try {
-    const { name, email, password } = await request.json();
+export async function POST(req){
+  try{
+    const {name, email, password} = await req.json();
 
-    if (!name || !email || !password) {
-      return new Response(JSON.stringify({ message: "All fields are required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    if(!name || !email || !password) {
+      return Response.json({message:"All fielde are required"},{status:400});
     }
 
     await connectDB();
 
-    // Check if email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return new Response(JSON.stringify({ message: "Email already registered!" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
+    const existingUser = await User.findOne({email:email.trim()});
+
+    if(existingUser){
+      return Response.json({message:"user already exists"},{status:400});
     }
 
-    // Create user with plain-text password (⚠️ not recommended)
-    await User.create({ name, email, password });
+    const hashedPassword = await bcrypt.hash(password,10);
 
-    return new Response(JSON.stringify({ message: "Registered successfully" }), {
-      status: 201,
-      headers: { "Content-Type": "application/json" },
+    const user = new User({
+      name,
+      email:email.trim(),
+      password:hashedPassword,
     });
-  } catch (error) {
-    console.error("Registration error:", error);
-    return new Response(JSON.stringify({ message: "Server error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+
+    await user.save();
+
+    return Response.json({message:"user registered successfully"},{status:201});
+  }catch(error){
+    return Response.json({message:"Registration error" , error:error.message},
+      {status:500},
+    )
   }
 }

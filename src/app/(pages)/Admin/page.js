@@ -22,7 +22,7 @@ export default function AdminInsertQuestion() {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
 
-    if (user?.isadmin === "yes") {
+    if (user?.admin === "yes") {
       setIsAdmin(true);
     }
 
@@ -112,7 +112,7 @@ export default function AdminInsertQuestion() {
           Insert New Question
         </h2>
 
-        {/* Question Input */}
+        
         <div>
           <label className="block mb-1 text-sm font-semibold">Question</label>
           <input
@@ -126,7 +126,7 @@ export default function AdminInsertQuestion() {
           />
         </div>
 
-        {/* Options a-d */}
+        
         {["a", "b", "c", "d"].map((opt) => (
           <div key={opt} className="grid grid-cols-2">
             <label className="block mb-1 text-sm font-semibold">
@@ -144,7 +144,7 @@ export default function AdminInsertQuestion() {
           </div>
         ))}
 
-        {/* Correct Option */}
+      
         <div>
           <label className="block mb-1 text-sm font-semibold">Correct Option</label>
           <input
@@ -158,7 +158,7 @@ export default function AdminInsertQuestion() {
           />
         </div>
 
-        {/* Company */}
+        
         <div>
           <label className="block mb-1 text-sm font-semibold">Company</label>
           <input
@@ -172,7 +172,7 @@ export default function AdminInsertQuestion() {
           />
         </div>
 
-        {/* Solution */}
+        
         <div>
           <label className="block mb-1 text-sm font-semibold">Solution</label>
           <textarea
@@ -186,7 +186,7 @@ export default function AdminInsertQuestion() {
           />
         </div>
 
-        {/* Submit Button */}
+       
         <button
           type="submit"
           className="w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition"

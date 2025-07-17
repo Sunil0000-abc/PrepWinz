@@ -12,13 +12,13 @@ const Instruction = ({ test }) => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-      {/* Content outside the card (top) */}
+      
       <div className="mb-6 text-center text-gray-700">
         <p className="text-lg font-medium">You are about to start the <span className="text-green-700 font-semibold">{test}</span> quiz.</p>
         <p className="text-sm text-gray-600">Please read the instructions carefully before starting.</p>
       </div>
 
-      {/* Main white box */}
+      
       <div className="bg-white p-6 rounded-lg shadow-md max-w-xl w-full">
         <h1 className="text-2xl font-semibold">{test}</h1>
         <h2 className="text-lg font-semibold text-green-700 mb-4">Instructions:</h2>
@@ -41,7 +41,7 @@ const Instruction = ({ test }) => {
         </div>
       </div>
 
-      {/* Content outside the card (bottom) */}
+      
       <div className="mt-8 text-center text-sm text-gray-500">
         <p>If you face any issue, please contact support.</p>
       </div>

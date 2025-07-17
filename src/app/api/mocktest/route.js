@@ -6,7 +6,7 @@ export async function GET() {
   let data = [];
   let success = true;
   try {
-    await connectDB(); // ✅ Correct way to connect
+    await connectDB(); // way to connect
     data = await Product.find();
    
   } catch (err) {

@@ -14,7 +14,7 @@ export default function ProgressBar() {
 
     const timer = setTimeout(() => {
       NProgress.done()
-    }, 500) // adjust if needed
+    }, 500) 
 
     return () => {
       clearTimeout(timer)
